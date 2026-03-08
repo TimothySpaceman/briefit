@@ -9,13 +9,17 @@ export function Header() {
     const {user, loading} = useAuth()
 
     return (
-        <header className="border-b bg-background w-full">
+        <header className="border-b bg-background w-full sticky top-0">
             <div className="mx-auto h-14 px-4 grid grid-cols-3 grid-rows-1 items-center">
                 <h2 className="text-foreground text-3xl font-bold">Briefit</h2>
 
                 <nav className="flex items-center gap-6 justify-self-center">
                     <Link to="/" className="font-semibold">
                         Головна
+                    </Link>
+
+                    <Link to="/briefs" className="font-semibold">
+                        Брифи
                     </Link>
 
                     {/*<Link to="/dashboard" className="text-muted-foreground hover:text-foreground">*/}

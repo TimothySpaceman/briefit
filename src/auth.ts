@@ -7,7 +7,7 @@ import {
     signOut,
     type User,
 } from "firebase/auth";
-import {doc, getDoc, setDoc} from "firebase/firestore";
+import {doc, getDoc, serverTimestamp, setDoc} from "firebase/firestore";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -20,6 +20,7 @@ async function ensureUserDoc(user: User) {
             displayName: user.displayName ?? null,
             email: user.email ?? null,
             role: "user",
+            createdAt: serverTimestamp(),
         });
     }
 }

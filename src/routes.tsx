@@ -4,6 +4,7 @@ import Home from "@/pages/index"
 import Login from "@/pages/login"
 import Register from "@/pages/register"
 import Briefs from "./pages/briefs"
+import BriefForm from "@/pages/brief-form.tsx";
 
 export const routes: RouteObject[] = [
     {
@@ -24,6 +25,11 @@ export const routes: RouteObject[] = [
     {
         path: "/briefs",
         element: <Briefs/>,
+    },
+
+    {
+        path: "/briefs/:id",
+        element: <BriefForm/>,
     },
 
     // {

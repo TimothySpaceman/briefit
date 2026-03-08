@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import {auth, db} from "../firebase";
+import {auth, db} from "@/firebase";
 import {onAuthStateChanged, type User as FirebaseUser} from "firebase/auth";
-import type {User} from "../lib/auth";
+import type {User} from "@/lib/auth";
 import {doc, getDoc} from "firebase/firestore";
 
 export type AuthWithRole =

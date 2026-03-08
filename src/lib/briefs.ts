@@ -13,36 +13,34 @@ export type Option = {
     value: string;
 }
 
-export type TextQuestion = {
+export type BaseQuestion = {
     id: string;
-    type: "text";
     description: string;
-    inputKind: "text" | "email" | "address" | "phone";
+    required?: boolean;
+}
+
+export type TextQuestion = {
+    type: "text";
+    inputKind: "text" | "email" | "address" | "phone" | "textarea";
     minLength?: number;
 }
 
 export type CheckboxQuestion = {
-    id: string;
     type: "checkbox";
-    description: string;
     options: Option[];
 }
 
 export type RadioQuestion = {
-    id: string;
     type: "radio";
-    description: string;
     options: Option[];
 }
 
 export type SelectQuestion = {
-    id: string;
     type: "select";
-    description: string;
     options: Option[];
 }
 
-export type Question = TextQuestion | CheckboxQuestion | RadioQuestion | SelectQuestion;
+export type Question = BaseQuestion & (TextQuestion | CheckboxQuestion | RadioQuestion | SelectQuestion);
 
 export type Block = {
     title: string;

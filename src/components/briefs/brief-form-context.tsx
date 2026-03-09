@@ -1,6 +1,8 @@
 import {createContext, type PropsWithChildren, useContext, useState} from "react";
 
 type BriefFormContextType = {
+    isLoading: boolean,
+    setIsLoading: (value: boolean) => void,
     answers: Record<string, any>;
     setAnswer: (id: string, value: any) => void;
 };
@@ -8,6 +10,7 @@ type BriefFormContextType = {
 export const BriefFormContext = createContext<BriefFormContextType | null>(null);
 
 export function BriefFormProvider({children}: PropsWithChildren) {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [answers, setAnswers] = useState<Record<string, any>>({});
 
     const setAnswer = (id: string, value: any) => {
@@ -18,7 +21,7 @@ export function BriefFormProvider({children}: PropsWithChildren) {
     };
 
     return (
-        <BriefFormContext.Provider value={{answers, setAnswer}}>
+        <BriefFormContext.Provider value={{isLoading, setIsLoading, answers, setAnswer}}>
             {children}
         </BriefFormContext.Provider>
     );

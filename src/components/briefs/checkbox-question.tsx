@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function CheckboxQuestion({question}: Props) {
-    const {answers, setAnswer} = useBriefForm();
+    const {isLoading, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? [];
 
@@ -31,6 +31,7 @@ export default function CheckboxQuestion({question}: Props) {
                     value={option.value}
                     onCheckedChange={() => toggle(option.value)}
                     checked={value.includes(option.value)}
+                    disabled={isLoading}
                 />
                 <Label
                     htmlFor={id(option)}

@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function RadioQuestion({question}: Props) {
-    const {answers, setAnswer} = useBriefForm();
+    const {isLoading, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? null;
 
@@ -18,6 +18,7 @@ export default function RadioQuestion({question}: Props) {
         value={value}
         onValueChange={v => setAnswer(question.id, v)}
         required={question.required}
+        disabled={isLoading}
         className="flex flex-col gap-1"
     >
         {question.options.map((option) => (

@@ -23,6 +23,7 @@ export type TextQuestion = {
     type: "text";
     inputKind: "text" | "email" | "address" | "phone" | "textarea";
     minLength?: number;
+    userSource?: string;
 }
 
 export type CheckboxQuestion = {

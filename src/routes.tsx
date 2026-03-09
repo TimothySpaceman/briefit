@@ -5,6 +5,7 @@ import Login from "@/pages/login"
 import Register from "@/pages/register"
 import Briefs from "./pages/briefs"
 import BriefForm from "@/pages/brief-form.tsx";
+import Submitted from "@/pages/submitted.tsx";
 
 export const routes: RouteObject[] = [
     {
@@ -30,6 +31,11 @@ export const routes: RouteObject[] = [
     {
         path: "/briefs/:id",
         element: <BriefForm/>,
+    },
+
+    {
+        path: "/submitted",
+        element: <Submitted/>,
     },
 
     // {

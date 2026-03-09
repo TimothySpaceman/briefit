@@ -21,7 +21,7 @@ async function waitForUserDoc(uid: string, retries = 5, delay = 200): Promise<Us
     for (let i = 0; i < retries; i++) {
         const snap = await getDoc(ref);
         if (snap.exists()) {
-            return snap.data() as User;
+            return {...snap.data(), id: snap.id} as User;
         }
         await new Promise((res) => setTimeout(res, delay));
     }

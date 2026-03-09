@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import type {Block as BlockType, Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import {doc, getDoc} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, serverTimestamp} from "firebase/firestore";
 import {db} from "@/firebase";
 import {Card, CardContent, CardTitle} from "@/components/ui/card.tsx";
 import Block from "@/components/briefs/block";
 import {BriefFormProvider, useBriefForm} from "@/components/briefs/brief-form-context";
 import {Button} from "@/components/ui/button.tsx";
+import {useAuth} from "@/hooks/useAuth.ts";
+import { toast } from "sonner"
 
 export default function BriefForm() {
     const {id} = useParams()
@@ -22,7 +24,7 @@ export default function BriefForm() {
             setIsLoading(true);
             const snap = await getDoc(doc(db, "briefs", id));
             if (snap.exists()) {
-                setBrief(snap.data() as Brief);
+                setBrief({...snap.data(), id: snap.id} as Brief);
             }
             setIsLoading(false);
         }
@@ -52,13 +54,30 @@ export default function BriefForm() {
 }
 
 function Form({brief}: { brief: Brief }) {
-    const {answers} = useBriefForm();
+    const navigate = useNavigate();
+    const {isLoading, setIsLoading, answers} = useBriefForm();
+    const {user} = useAuth();
 
     const blocks = JSON.parse(brief.schema) as BlockType[];
-    if(!Array.isArray(blocks)) return <p>Помилка при відображенні брифу</p>
+    if (!Array.isArray(blocks)) return <p className="text-destructive">Помилка при відображенні брифу</p>
 
-    function handleSubmit() {
-        console.log(answers)
+    async function handleSubmit() {
+        setIsLoading(true);
+        const data: any = {
+            brief,
+            answers,
+            createdAt: serverTimestamp(),
+        };
+        if(user) data.submitter = user
+
+        try {
+            await addDoc(collection(db, "submissions"), data);
+            navigate("/submitted", {replace: true});
+        } catch (error) {
+            toast("Сталася помилка. Спробуйте пізніше")
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return <form
@@ -69,8 +88,9 @@ function Form({brief}: { brief: Brief }) {
         <Button
             onClick={handleSubmit}
             className="max-w-30 w-full text-base"
+            disabled={isLoading}
         >
-            Надіслати
+            {isLoading && <Spinner/>} Надіслати
         </Button>
     </form>
 }

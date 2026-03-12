@@ -5,6 +5,7 @@ import * as path from "node:path";
 
 // https://vite.dev/config/
 export default defineConfig({
+    base: "/briefit/",
     plugins: [
         react({
             babel: {

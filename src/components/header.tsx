@@ -22,9 +22,9 @@ export function Header() {
                         Брифи
                     </Link>
 
-                    {user?.role === "user" && (
+                    {user && (
                         <Link to="/submissions" className="text-muted-foreground hover:text-foreground">
-                            Мої подання
+                            {user.role === "admin" ? "Подання" : "Мої подання"}
                         </Link>
                     )}
                 </nav>

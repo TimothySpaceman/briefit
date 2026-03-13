@@ -4,21 +4,27 @@ import {useBriefForm} from "@/components/briefs/brief-form-context.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
 import type {User} from "@/lib/auth.ts";
+import type {ChangeEvent} from "react";
 
 type Props = {
     question: BaseQuestion & TextQuestion;
 }
 
 export default function TextQuestion({question}: Props) {
-    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, autofill, answers, setAnswer} = useBriefForm();
     const {user} = useAuth();
 
-    let defaultValue = (question.userSource && user) ? user[question.userSource as keyof User] : "";
+    let defaultValue = (autofill && question.userSource && user) ? user[question.userSource as keyof User] : "";
+
+    function handleChange(e: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) {
+        const value = e.currentTarget.value
+        setAnswer(question.id, value.length > 0 ? value : undefined)
+    }
 
     if (question.inputKind === "textarea") {
         return <Textarea
             value={answers[question.id] ?? defaultValue}
-            onChange={e => setAnswer(question.id, e.currentTarget.value)}
+            onChange={handleChange}
             name={question.id}
             required={question.required}
             minLength={question.minLength}
@@ -28,7 +34,7 @@ export default function TextQuestion({question}: Props) {
 
     return <Input
         value={answers[question.id] ?? defaultValue}
-        onChange={e => setAnswer(question.id, e.currentTarget.value)}
+        onChange={handleChange}
         name={question.id}
         type={question.inputKind}
         required={question.required}

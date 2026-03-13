@@ -45,7 +45,7 @@ export default function BriefForm() {
                         <p className="text-base">{brief.description}</p>
                     </CardContent>
                 </Card>
-                <BriefFormProvider>
+                <BriefFormProvider autofill>
                     <Form brief={brief}/>
                 </BriefFormProvider>
             </>

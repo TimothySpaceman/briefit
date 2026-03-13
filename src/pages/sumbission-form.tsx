@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useBeforeUnload, useLocation, useNavigate, useParams} from "react-router-dom";
 import type {Submission} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import {doc, getDoc} from "firebase/firestore";
+import {collection, doc, getDoc, setDoc} from "firebase/firestore";
 import {db} from "@/firebase";
 import {Card, CardContent, CardFooter, CardTitle} from "@/components/ui/card.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
 import {BriefFormProvider, useBriefForm} from "@/components/briefs/brief-form-context.tsx";
 import Block from "@/components/briefs/block.tsx";
+import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
 
 export default function SubmissionForm() {
     const {id} = useParams()
@@ -58,48 +60,68 @@ export default function SubmissionForm() {
                     </CardFooter>
                 </Card>
                 <BriefFormProvider defaultAnswers={submission.answers} isReadOnly={!user || user.role !== "admin"}>
-                    <Form submission={submission}/>
+                    <Form submission={submission} defaultAnswers={submission.answers}/>
                 </BriefFormProvider>
             </>
         )}
     </div>
 }
 
-function Form({submission}: { submission: Submission }) {
-    const navigate = useNavigate();
-    const {isLoading, setIsLoading, answers} = useBriefForm();
-    const {user} = useAuth();
+function Form({submission, defaultAnswers}: { submission: Submission, defaultAnswers: Record<string, any> }) {
+    const [originalAnswers, setOriginalAnswers] = useState<Record<string, any>>(defaultAnswers)
+    const {isLoading, isReadOnly, setIsLoading, answers, setAnswers} = useBriefForm();
 
-    // async function handleSubmit() {
-    //     setIsLoading(true);
-    //     const data: any = {
-    //         brief,
-    //         answers,
-    //         createdAt: serverTimestamp(),
-    //     };
-    //     if(user) data.submitter = user
-    //
-    //     try {
-    //         await addDoc(collection(db, "submissions"), data);
-    //         navigate("/submitted", {replace: true});
-    //     } catch (error) {
-    //         toast("Сталася помилка. Спробуйте пізніше")
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }
+    const isDirty = JSON.stringify(answers) !== JSON.stringify(originalAnswers);
 
-    return <form
-        className="w-full max-w-xl flex flex-col items-center gap-6"
-        onSubmit={e => e.preventDefault()}
-    >
-        {submission.brief.schema.map((block, i) => <Block block={block} key={`block-${i}`}/>)}
-        {/*<Button*/}
-        {/*    onClick={handleSubmit}*/}
-        {/*    className="max-w-30 w-full text-base"*/}
-        {/*    disabled={isLoading}*/}
-        {/*>*/}
-        {/*    {isLoading && <Spinner/>} Надіслати*/}
-        {/*</Button>*/}
-    </form>
+    async function handleSubmit() {
+        if(isReadOnly) return;
+        setIsLoading(true);
+        const data: any = {
+            ...submission,
+            answers
+        };
+
+        try {
+            await setDoc(doc(db, "submissions", submission.id), data);
+            setOriginalAnswers({...answers})
+        } catch (error) {
+            toast("Сталася помилка. Спробуйте пізніше")
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useBeforeUnload(
+        (e) => {
+            if (isDirty) {
+                e.preventDefault();
+            }
+        },
+        { capture: true }
+    );
+
+    return <>
+        {isDirty && <Card className="w-full max-w-xl">
+            <CardContent className="flex gap-1 items-center justify-end">
+                <div className="text-destructive font-bold text-base ml-0 mr-auto">Наявні незбережені зміни</div>
+                <Button
+                    onClick={() => setAnswers({...originalAnswers})}
+                    variant="outline"
+                    disabled={isLoading}
+                >
+                    Скинути
+                </Button
+                >
+                <Button onClick={handleSubmit} disabled={isLoading}>
+                    Зберегти
+                </Button>
+            </CardContent>
+        </Card>}
+        <form
+            className="w-full max-w-xl flex flex-col items-center gap-6"
+            onSubmit={e => e.preventDefault()}
+        >
+            {submission.brief.schema.map((block, i) => <Block block={block} key={`block-${i}`}/>)}
+        </form>
+    </>
 }

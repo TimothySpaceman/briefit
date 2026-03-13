@@ -9,7 +9,7 @@ export function Header() {
     const {user, loading} = useAuth()
 
     return (
-        <header className="border-b bg-background w-full sticky top-0">
+        <header className="border-b bg-background w-full sticky top-0 z-100">
             <div className="mx-auto h-14 px-4 grid grid-cols-3 grid-rows-1 items-center">
                 <h2 className="text-foreground text-3xl font-bold">Briefit</h2>
 

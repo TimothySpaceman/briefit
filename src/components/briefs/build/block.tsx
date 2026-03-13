@@ -9,7 +9,7 @@ import type {
     TextQuestion
 } from "@/lib/briefs.ts";
 import {Card, CardContent, CardTitle} from "@/components/ui/card.tsx";
-import {Field, FieldLegend} from "@/components/ui/field.tsx";
+import {Field, FieldError, FieldLegend} from "@/components/ui/field.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {Plus, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
@@ -21,11 +21,15 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
+import {Spinner} from "@/components/ui/spinner.tsx";
+import {extractByPrefix} from "@/lib/utils.ts";
 
 type Props = {
     block: Block
     onChange: (newBlock: Block) => void
     onRemove: () => void
+    errors: Record<string, string>
+    isLoading?: boolean
 }
 
 type Templates = {
@@ -85,7 +89,7 @@ const templates: Templates = {
     })
 }
 
-export default function BlockBuilder({block, onChange, onRemove}: Props) {
+export default function BlockBuilder({block, onChange, onRemove, isLoading, errors}: Props) {
     function handleRemove() {
         if(confirm(`Ви дійсно хочете видалити блок "${block.title}"?`)){
             onRemove()
@@ -114,7 +118,7 @@ export default function BlockBuilder({block, onChange, onRemove}: Props) {
         })
     }
 
-    return <Card className="w-full max-w-xl transition-shadow">
+    return <Card className="w-full max-w-xl transition-shadow relative">
         <CardTitle className="px-4">
             <Field className="gap-0">
                 <div className="flex items-end justify-between gap-2">
@@ -128,16 +132,22 @@ export default function BlockBuilder({block, onChange, onRemove}: Props) {
                     value={block.title}
                     onChange={e => onChange({...block, title: e.target.value})}
                 />
+                <FieldError>
+                    {errors.title}
+                </FieldError>
             </Field>
         </CardTitle>
         <CardContent className="flex flex-col gap-8">
-            {block.questions.map((question, i) => <div className="flex flex-col gap-3">
+            {block.questions.map((question, i) => <div
+                key={`q-${question.id}`}
+                className="flex flex-col gap-3"
+            >
                 <Separator/>
                 <QuestionBuilder
-                    key={`q-${question.id}`}
                     question={question}
                     onChange={newQuestion => handleUpdateQuestion(i, newQuestion)}
                     onRemove={() => handleRemoveQuestion(i)}
+                    errors={extractByPrefix(errors, `questions_${i}_`)}
                 />
             </div>)}
             <Separator/>
@@ -163,5 +173,8 @@ export default function BlockBuilder({block, onChange, onRemove}: Props) {
                 </DropdownMenuContent>
             </DropdownMenu>
         </CardContent>
+        {isLoading && <div className="absolute inset-0 bg-background/75 flex items-center justify-center">
+            <Spinner className="size-12"/>
+        </div>}
     </Card>
 }

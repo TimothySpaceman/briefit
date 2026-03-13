@@ -1,11 +1,12 @@
 import type {BaseQuestion, Question, TextQuestion} from "@/lib/briefs.ts";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {Field, FieldLegend} from "@/components/ui/field.tsx";
+import {Field, FieldError, FieldLegend} from "@/components/ui/field.tsx";
 import {Input} from "@/components/ui/input.tsx";
 
 type Props = {
     question: BaseQuestion & TextQuestion;
     onChange: (question: Question) => void;
+    errors: Record<string, string>
 }
 
 type InputKind = "text" | "email" | "address" | "phone" | "textarea";
@@ -28,7 +29,7 @@ const userSourcesLabels: any = {
     displayName: "Імʼя користувача"
 }
 
-export default function TextQuestionBuilder({question, onChange}: Props) {
+export default function TextQuestionBuilder({question, onChange, errors}: Props) {
     return <>
         <Field className="gap-0">
             <FieldLegend>Вид поля</FieldLegend>
@@ -53,6 +54,9 @@ export default function TextQuestionBuilder({question, onChange}: Props) {
                     </SelectGroup>
                 </SelectContent>
             </Select>
+            <FieldError>
+                {errors.inputKind}
+            </FieldError>
         </Field>
         <Field className="gap-0">
             <FieldLegend>Автозаповнення</FieldLegend>
@@ -77,6 +81,9 @@ export default function TextQuestionBuilder({question, onChange}: Props) {
                     </SelectGroup>
                 </SelectContent>
             </Select>
+            <FieldError>
+                {errors.userSource}
+            </FieldError>
         </Field>
         <Field className="gap-0">
             <FieldLegend>Мінімальна довжина</FieldLegend>
@@ -91,6 +98,9 @@ export default function TextQuestionBuilder({question, onChange}: Props) {
                     onChange({...question, minLength: value});
                 }}
             />
+            <FieldError>
+                {errors.minLength}
+            </FieldError>
         </Field>
     </>
 }

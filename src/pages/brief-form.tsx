@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import type {Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {addDoc, collection, doc, getDoc, serverTimestamp} from "firebase/firestore";
@@ -10,9 +10,11 @@ import {BriefFormProvider, useBriefForm} from "@/components/briefs/view/brief-fo
 import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
 import { toast } from "sonner"
+import {Pencil} from "lucide-react";
 
 export default function BriefForm() {
     const {id} = useParams()
+    const {user} = useAuth();
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [brief, setBrief] = useState<Brief>()
@@ -38,8 +40,13 @@ export default function BriefForm() {
         {!isLoading && brief && (
             <>
                 <Card className="w-full max-w-xl">
-                    <CardTitle className="px-4">
+                    <CardTitle className="px-4 flex gap-1 items-center justify-between">
                         <h2 className="text-2xl font-bold">{brief.title}</h2>
+                        {user?.role === "admin" && <Button asChild size="icon">
+                            <Link to={`/briefs/${brief.id}/edit`}>
+                                <Pencil/>
+                            </Link>
+                        </Button>}
                     </CardTitle>
                     <CardContent>
                         <p className="text-base">{brief.description}</p>

@@ -9,7 +9,7 @@ type Props = {
 
 export default function BriefCard({brief, actions}: Props) {
     return <Card className="w-full max-w-xl">
-        <CardTitle className="px-4 flex justify-end items-center gap-6">
+        <CardTitle className="px-4 flex justify-end items-center gap-1">
             <h2 className="text-2xl font-bold ml-0 mr-auto">{brief.title}</h2>
             {actions}
         </CardTitle>

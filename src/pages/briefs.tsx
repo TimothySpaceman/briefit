@@ -1,6 +1,6 @@
 import {db} from "@/firebase";
 import {
-    collection,
+    collection, deleteDoc,
     doc,
     type DocumentData,
     getDoc,
@@ -17,6 +17,8 @@ import BriefCard from "@/components/brief-card.tsx";
 import {Button} from "@/components/ui/button";
 import {useAuth} from "@/hooks/useAuth.ts";
 import {Link} from "react-router-dom";
+import {Eye, Pencil, Trash} from "lucide-react";
+import {toast} from "sonner";
 
 const PAGE_SIZE = 10;
 
@@ -70,6 +72,17 @@ export default function Briefs() {
         }
     };
 
+    async function handleRemove(brief: Brief) {
+        if (!confirm(`Ви дійсно хочете видалити бриф "${brief.title}"?`)) return
+
+        try {
+            await deleteDoc(doc(db, "briefs", brief.id));
+            setBriefs(prev => prev.filter(b => b.id !== brief.id));
+        } catch (error) {
+            toast("Сталася помилка. Спробуйте пізніше")
+        }
+    }
+
     useEffect(() => {
         fetchBriefs(true);
     }, []);
@@ -88,7 +101,21 @@ export default function Briefs() {
                     key={`brief-${brief.id}`}
                     brief={brief}
                     actions={user?.role === "admin" ? (
-                        <p>Admin here</p>
+                        <>
+                            <Button asChild size="icon">
+                                <Link to={`/briefs/${brief.id}`}>
+                                    <Eye/>
+                                </Link>
+                            </Button>
+                            <Button asChild size="icon">
+                                <Link to={`/briefs/${brief.id}/edit`}>
+                                    <Pencil/>
+                                </Link>
+                            </Button>
+                            <Button variant="destructive" onClick={() => handleRemove(brief)} size="icon">
+                                <Trash/>
+                            </Button>
+                        </>
                         ) : (
                         <Button asChild>
                             <Link to={`/briefs/${brief.id}`}>Заповнити</Link>

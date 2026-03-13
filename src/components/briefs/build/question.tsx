@@ -1,9 +1,9 @@
-import type {Question} from "@/lib/briefs.ts";
+import {type Question, questionSchema} from "@/lib/briefs.ts";
 import CheckboxQuestionBuilder from "@/components/briefs/build/checkbox-question.tsx";
 import RadioQuestionBuilder from "@/components/briefs/build/radio-question.tsx";
 import SelectQuestionBuilder from "@/components/briefs/build/select-question.tsx";
 import TextQuestionBuilder from "@/components/briefs/build/text-question.tsx";
-import {Field, FieldLegend} from "@/components/ui/field.tsx";
+import {Field, FieldError, FieldLegend} from "@/components/ui/field.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Trash} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea.tsx";
@@ -14,6 +14,7 @@ type Props = {
     question: Question;
     onChange: (newQuestion: Question) => void;
     onRemove: () => void;
+    errors: Record<string, string>
 }
 
 const labels = {
@@ -23,7 +24,7 @@ const labels = {
     select: "Вибір зі списку"
 }
 
-export default function QuestionBuilder({question, onChange, onRemove}: Props) {
+export default function QuestionBuilder({question, onChange, onRemove, errors}: Props) {
     function handleRemove() {
         if (confirm(`Ви дійсно хочете видалити питання "${question.description}"?`)) {
             onRemove()
@@ -43,6 +44,9 @@ export default function QuestionBuilder({question, onChange, onRemove}: Props) {
                 value={question.description}
                 onChange={e => onChange({...question, description: e.target.value})}
             />
+            <FieldError>
+                {errors.description}
+            </FieldError>
         </Field>
         <div  className="flex gap-2 items-center">
             <Checkbox
@@ -58,20 +62,20 @@ export default function QuestionBuilder({question, onChange, onRemove}: Props) {
                 Обовʼязкове
             </Label>
         </div>
-        <InnerBuilder question={question} onChange={onChange} onRemove={onRemove}/>
+        <InnerBuilder question={question} onChange={onChange} onRemove={onRemove} errors={errors}/>
     </div>
 }
 
-function InnerBuilder({question, onChange, onRemove}: Props) {
+function InnerBuilder({question, onChange, errors}: Props & {errors: Record<string, string>}) {
     switch (question.type) {
         case "text":
-            return <TextQuestionBuilder question={question} onChange={onChange}/>;
+            return <TextQuestionBuilder question={question} errors={errors} onChange={onChange}/>;
         case "checkbox":
-            return <CheckboxQuestionBuilder question={question} onChange={onChange}/>;
+            return <CheckboxQuestionBuilder question={question} errors={errors} onChange={onChange}/>;
         case "radio":
-            return <RadioQuestionBuilder question={question} onChange={onChange}/>;
+            return <RadioQuestionBuilder question={question} errors={errors} onChange={onChange}/>;
         case "select":
-            return <SelectQuestionBuilder question={question} onChange={onChange}/>;
+            return <SelectQuestionBuilder question={question} errors={errors} onChange={onChange}/>;
         default:
             return <></>;
     }

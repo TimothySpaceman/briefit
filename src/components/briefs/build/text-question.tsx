@@ -2,6 +2,7 @@ import type {BaseQuestion, Question, TextQuestion} from "@/lib/briefs.ts";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Field, FieldError, FieldLegend} from "@/components/ui/field.tsx";
 import {Input} from "@/components/ui/input.tsx";
+import {useEffect} from "react";
 
 type Props = {
     question: BaseQuestion & TextQuestion;
@@ -30,6 +31,15 @@ const userSourcesLabels: any = {
 }
 
 export default function TextQuestionBuilder({question, onChange, errors}: Props) {
+    useEffect(() => {
+        if(question.required && (!question.minLength || +question.minLength <= 0)){
+            onChange({
+                ...question,
+                minLength: 1,
+            })
+        }
+    }, [question.required]);
+
     return <>
         <Field className="gap-0">
             <FieldLegend>Вид поля</FieldLegend>
@@ -63,7 +73,7 @@ export default function TextQuestionBuilder({question, onChange, errors}: Props)
             <Select
                 name={`${question.id}-userSource`}
                 value={question.userSource ?? "NONE"}
-                onValueChange={(val) => onChange({...question, userSource: val === "NONE" ? undefined : val})}
+                onValueChange={(val) => onChange({...question, userSource: val === "NONE" ? null : val})}
             >
                 <SelectTrigger>
                     <SelectValue placeholder="Оберіть відповідь..."/>
@@ -91,10 +101,10 @@ export default function TextQuestionBuilder({question, onChange, errors}: Props)
                 type="number"
                 placeholder="Необовʼязково"
                 name={`${question.id}-minLength`}
-                value={question.minLength ?? ""}
-                min={0}
+                value={question.required ? Math.max(+(question.minLength ?? "1"), 1) : (question.minLength ?? "")}
+                min={question.required ? 1 : 0}
                 onChange={e => {
-                    const value = e.target.value.length > 0 ? +e.target.value : undefined;
+                    const value = e.target.value.length > 0 ? +e.target.value : null;
                     onChange({...question, minLength: value});
                 }}
             />

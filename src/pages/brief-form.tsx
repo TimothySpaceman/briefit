@@ -9,7 +9,7 @@ import Block from "@/components/briefs/view/block.tsx";
 import {BriefFormProvider, useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
-import { toast } from "sonner"
+import {toast} from "sonner"
 import {Pencil} from "lucide-react";
 
 export default function BriefForm() {
@@ -62,17 +62,39 @@ export default function BriefForm() {
 
 function Form({brief}: { brief: Brief }) {
     const navigate = useNavigate();
-    const {isLoading, setIsLoading, answers} = useBriefForm();
+    const {isLoading, setIsLoading, answers, errors, setErrors} = useBriefForm();
     const {user} = useAuth();
 
+    function validate() {
+        const errorsList: [string, string][] = [];
+        for (const question of brief.schema.flatMap(block => block.questions)) {
+            const error = (message: string) => errorsList.push([question.id, message]);
+            const answer = answers[question.id];
+            if (question.required && (!answer || answer.length === 0)) {
+                error("Це питання обовʼязкове");
+                continue;
+            }
+            switch (question.type) {
+                case "text":
+                    if (answer && question.minLength && answer.length < question.minLength) {
+                        error(`Мінімальна довжина відповіді: ${question.minLength}`);
+                    }
+                    break;
+            }
+        }
+        setErrors(Object.fromEntries(errorsList));
+        return errorsList.length === 0;
+    }
+
     async function handleSubmit() {
+        if(!validate()) return;
         setIsLoading(true);
         const data: any = {
             brief,
             answers,
             createdAt: serverTimestamp(),
         };
-        if(user) data.submitter = user
+        if (user) data.submitter = user
 
         try {
             await addDoc(collection(db, "submissions"), data);
@@ -84,6 +106,10 @@ function Form({brief}: { brief: Brief }) {
         }
     }
 
+    useEffect(() => {
+        validate();
+    }, [answers]);
+
     return <form
         className="w-full max-w-xl flex flex-col items-center gap-6"
         onSubmit={e => e.preventDefault()}
@@ -92,7 +118,7 @@ function Form({brief}: { brief: Brief }) {
         <Button
             onClick={handleSubmit}
             className="max-w-30 w-full text-base"
-            disabled={isLoading}
+            disabled={isLoading || Object.keys(errors).length > 0}
         >
             {isLoading && <Spinner/>} Надіслати
         </Button>

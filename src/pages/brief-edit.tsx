@@ -37,7 +37,7 @@ export default function EditBriefPage() {
     async function handleSave(draft: BriefDraft) {
         if(!brief) return;
         try {
-            const snap = await setDoc(doc(db, "briefs", brief.id), {
+            await setDoc(doc(db, "briefs", brief.id), {
                 ...brief,
                 ...draft
             })

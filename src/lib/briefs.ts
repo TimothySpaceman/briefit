@@ -24,8 +24,8 @@ export type BaseQuestion = {
 export type TextQuestion = {
     type: "text";
     inputKind: "text" | "email" | "address" | "phone" | "textarea";
-    minLength?: number;
-    userSource?: string;
+    minLength?: number|null;
+    userSource?: string|null;
 }
 
 export type CheckboxQuestion = {
@@ -77,8 +77,8 @@ export const baseQuestionSchema = z.object({
 export const textQuestionSchema = baseQuestionSchema.extend({
     type: z.literal("text"),
     inputKind: z.enum(["text", "textarea", "email", "address", "phone"], "Некоректний вид поля"),
-    minLength: z.int().min(0, "Мінімальна довжина не може бути менше 0").optional(),
-    userSource: z.enum(["email", "displayName"], "Некоректне поле автозаповнення").optional()
+    minLength: z.int().min(0, "Мінімальна довжина не може бути менше 0").nullable().optional(),
+    userSource: z.enum(["email", "displayName"], "Некоректне поле автозаповнення").nullable().optional()
 })
 
 export const optionSchema = z.object({

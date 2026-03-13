@@ -28,22 +28,22 @@ export default function TextQuestion({question}: Props) {
 
     if (question.inputKind === "textarea") {
         return <Textarea
-            value={answers[question.id] ?? defaultValue ?? ""}
+            value={answers[question.id] ?? ""}
             onChange={handleChange}
             name={question.id}
             required={question.required}
-            minLength={question.minLength}
+            minLength={question.minLength ?? 0}
             disabled={isLoading || isReadOnly}
         />
     }
 
     return <Input
-        value={answers[question.id] ?? defaultValue ?? ""}
+        value={answers[question.id] ?? ""}
         onChange={handleChange}
         name={question.id}
         type={question.inputKind}
         required={question.required}
-        minLength={question.minLength}
+        minLength={question.minLength ?? 0}
         disabled={isLoading || isReadOnly}
         autoComplete="on"
     />

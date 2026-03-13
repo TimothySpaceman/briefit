@@ -6,6 +6,9 @@ import Register from "@/pages/register"
 import Briefs from "./pages/briefs"
 import BriefForm from "@/pages/brief-form.tsx";
 import Submitted from "@/pages/submitted.tsx";
+import Submissions from "@/pages/sumbissions.tsx";
+import SubmissionForm from "@/pages/sumbission-form.tsx";
+import {RequireAuth} from "@/components/require-auth.tsx";
 
 export const routes: RouteObject[] = [
     {
@@ -36,6 +39,20 @@ export const routes: RouteObject[] = [
     {
         path: "/submitted",
         element: <Submitted/>,
+    },
+
+    {
+        path: "/submissions",
+        element: <RequireAuth>
+            <Submissions/>
+        </RequireAuth>,
+    },
+
+    {
+        path: "/submissions/:id",
+        element: <RequireAuth>
+            <SubmissionForm/>
+        </RequireAuth>,
     },
 
     // {

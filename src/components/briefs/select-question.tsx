@@ -7,7 +7,7 @@ type Props = {
 }
 
 export default function SelectQuestion({question}: Props) {
-    const {isLoading, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? "";
 
@@ -16,7 +16,7 @@ export default function SelectQuestion({question}: Props) {
         required={question.required}
         value={value}
         onValueChange={(val) => setAnswer(question.id, val)}
-        disabled={isLoading}
+        disabled={isLoading || isReadOnly}
     >
         <SelectTrigger>
             <SelectValue placeholder="Оберіть відповідь..."/>

@@ -14,23 +14,19 @@ export function Header() {
                 <h2 className="text-foreground text-3xl font-bold">Briefit</h2>
 
                 <nav className="flex items-center gap-6 justify-self-center">
-                    <Link to="/" className="font-semibold">
+                    <Link to="/" className="text-muted-foreground hover:text-foreground">
                         Головна
                     </Link>
 
-                    <Link to="/briefs" className="font-semibold">
+                    <Link to="/briefs" className="text-muted-foreground hover:text-foreground">
                         Брифи
                     </Link>
 
-                    {/*<Link to="/dashboard" className="text-muted-foreground hover:text-foreground">*/}
-                    {/*    Dashboard*/}
-                    {/*</Link>*/}
-
-                    {/*{role === "admin" && (*/}
-                    {/*    <Link to="/admin" className="text-muted-foreground hover:text-foreground">*/}
-                    {/*        Admin*/}
-                    {/*    </Link>*/}
-                    {/*)}*/}
+                    {user?.role === "user" && (
+                        <Link to="/submissions" className="text-muted-foreground hover:text-foreground">
+                            Мої подання
+                        </Link>
+                    )}
                 </nav>
 
                 <div className="flex items-center justify-self-end gap-3">

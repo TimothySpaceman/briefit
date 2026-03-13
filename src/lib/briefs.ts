@@ -1,4 +1,5 @@
 import type {Timestamp} from "firebase/firestore";
+import type {User} from "@/lib/auth.ts";
 
 export const QuestionTypes = {
     text: "text",
@@ -52,7 +53,15 @@ export type Brief = {
     id: string;
     title: string;
     description: string;
-    schema: string;
+    schema: Block[];
     createdBy: string;
+    createdAt: Timestamp;
+}
+
+export type Submission = {
+    id: string;
+    answers: Record<string, any>;
+    brief: Brief;
+    submitter?: User;
     createdAt: Timestamp;
 }

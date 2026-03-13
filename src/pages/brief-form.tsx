@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import type {Block as BlockType, Brief} from "@/lib/briefs.ts";
+import type {Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import {addDoc, collection, doc, getDoc, serverTimestamp} from "firebase/firestore";
 import {db} from "@/firebase";
@@ -58,9 +58,6 @@ function Form({brief}: { brief: Brief }) {
     const {isLoading, setIsLoading, answers} = useBriefForm();
     const {user} = useAuth();
 
-    const blocks = JSON.parse(brief.schema) as BlockType[];
-    if (!Array.isArray(blocks)) return <p className="text-destructive">Помилка при відображенні брифу</p>
-
     async function handleSubmit() {
         setIsLoading(true);
         const data: any = {
@@ -84,7 +81,7 @@ function Form({brief}: { brief: Brief }) {
         className="w-full max-w-xl flex flex-col items-center gap-6"
         onSubmit={e => e.preventDefault()}
     >
-        {blocks.map((block, i) => <Block block={block} key={`block-${i}`}/>)}
+        {brief.schema.map((block, i) => <Block block={block} key={`block-${i}`}/>)}
         <Button
             onClick={handleSubmit}
             className="max-w-30 w-full text-base"

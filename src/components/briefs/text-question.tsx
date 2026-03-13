@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default function TextQuestion({question}: Props) {
-    const {isLoading, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
     const {user} = useAuth();
 
     let defaultValue = (question.userSource && user) ? user[question.userSource as keyof User] : "";
@@ -22,7 +22,7 @@ export default function TextQuestion({question}: Props) {
             name={question.id}
             required={question.required}
             minLength={question.minLength}
-            disabled={isLoading}
+            disabled={isLoading || isReadOnly}
         />
     }
 
@@ -33,7 +33,7 @@ export default function TextQuestion({question}: Props) {
         type={question.inputKind}
         required={question.required}
         minLength={question.minLength}
-        disabled={isLoading}
+        disabled={isLoading || isReadOnly}
         autoComplete="on"
     />
 }

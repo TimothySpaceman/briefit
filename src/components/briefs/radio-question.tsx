@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function RadioQuestion({question}: Props) {
-    const {isLoading, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? null;
 
@@ -27,6 +27,7 @@ export default function RadioQuestion({question}: Props) {
                     value={option.value}
                     id={id(option)}
                     onChange={e => console.log(e)}
+                    disabled={isLoading || isReadOnly}
                 />
                 <Label
                     htmlFor={id(option)}

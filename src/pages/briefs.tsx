@@ -1,5 +1,15 @@
 import {db} from "@/firebase";
-import {collection, type DocumentData, getDocs, limit, orderBy, query, startAfter} from "firebase/firestore";
+import {
+    collection,
+    doc,
+    type DocumentData,
+    getDoc,
+    getDocs,
+    limit,
+    orderBy,
+    query, setDoc,
+    startAfter
+} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import type {Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
@@ -50,7 +60,6 @@ export default function Briefs() {
             if (querySnapshot.docs.length < PAGE_SIZE) {
                 setHasMore(false);
             }
-
         } catch (error) {
             console.error("Error fetching briefs:", error);
         } finally {

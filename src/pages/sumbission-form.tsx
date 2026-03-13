@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useBeforeUnload, useLocation, useNavigate, useParams} from "react-router-dom";
 import type {Submission} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
-import {collection, doc, getDoc, setDoc} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDoc, setDoc} from "firebase/firestore";
 import {db} from "@/firebase";
 import {Card, CardContent, CardFooter, CardTitle} from "@/components/ui/card.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
@@ -10,6 +10,7 @@ import {BriefFormProvider, useBriefForm} from "@/components/briefs/brief-form-co
 import Block from "@/components/briefs/block.tsx";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
+import {Trash} from "lucide-react";
 
 export default function SubmissionForm() {
     const {id} = useParams()
@@ -39,6 +40,13 @@ export default function SubmissionForm() {
         fetchBrief();
     }, [id])
 
+    async function handleRemove(){
+        if (!id) return;
+        if(!confirm("Ви дійсно хочете видалити це подання назавжди?")) return;
+        await deleteDoc(doc(db, "submissions", id));
+        navigate("/submissions")
+    }
+
     const isOwn = user && user.id === submission?.submitter?.id
     const submitter = isOwn ? "вас" : submission?.submitter?.displayName ?? "анонімного користувача"
 
@@ -48,8 +56,11 @@ export default function SubmissionForm() {
         {!isLoading && submission && (
             <>
                 <Card className="w-full max-w-xl">
-                    <CardTitle className="px-4">
+                    <CardTitle className="px-4 flex gap-4 items-start justify-between">
                         <h2 className="text-2xl font-bold">{submission.brief.title}</h2>
+                        <Button variant="destructive" size="icon" onClick={handleRemove}>
+                            <Trash/>
+                        </Button>
                     </CardTitle>
                     <CardContent>
                         <p className="text-base">{submission.brief.description}</p>
@@ -121,7 +132,11 @@ function Form({submission, defaultAnswers}: { submission: Submission, defaultAns
             className="w-full max-w-xl flex flex-col items-center gap-6"
             onSubmit={e => e.preventDefault()}
         >
-            {submission.brief.schema.map((block, i) => <Block block={block} key={`block-${i}`}/>)}
+            {submission.brief.schema.map((block, i) => <Block
+                className={isDirty ? "shadow-destructive/50 shadow-lg" : undefined}
+                block={block}
+                key={`block-${i}`}
+            />)}
         </form>
     </>
 }

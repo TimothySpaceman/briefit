@@ -1,7 +1,7 @@
-import type {BaseQuestion, Option, RadioQuestion} from "@/lib/briefs";
-import {useBriefForm} from "@/components/briefs/brief-form-context.tsx";
+import type {BaseQuestion, Option, RadioQuestion} from "@/lib/briefs.ts";
+import {useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group.tsx";
 
 type Props = {
     question: BaseQuestion & RadioQuestion;
@@ -26,7 +26,6 @@ export default function RadioQuestion({question}: Props) {
                 <RadioGroupItem
                     value={option.value}
                     id={id(option)}
-                    onChange={e => console.log(e)}
                     disabled={isLoading || isReadOnly}
                 />
                 <Label

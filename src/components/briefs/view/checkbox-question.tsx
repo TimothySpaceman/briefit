@@ -1,7 +1,7 @@
-import type {BaseQuestion, CheckboxQuestion, Option} from "@/lib/briefs";
-import {Checkbox} from "@/components/ui/checkbox";
+import type {BaseQuestion, CheckboxQuestion, Option} from "@/lib/briefs.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {useBriefForm} from "@/components/briefs/brief-form-context.tsx";
+import {useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 
 type Props = {
     question: BaseQuestion & CheckboxQuestion;

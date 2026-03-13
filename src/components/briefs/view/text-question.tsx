@@ -1,6 +1,6 @@
-import type {BaseQuestion, TextQuestion} from "@/lib/briefs";
-import {Input} from "@/components/ui/input";
-import {useBriefForm} from "@/components/briefs/brief-form-context.tsx";
+import type {BaseQuestion, TextQuestion} from "@/lib/briefs.ts";
+import {Input} from "@/components/ui/input.tsx";
+import {useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
 import type {User} from "@/lib/auth.ts";

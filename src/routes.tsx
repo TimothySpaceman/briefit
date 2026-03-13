@@ -9,6 +9,7 @@ import Submitted from "@/pages/submitted.tsx";
 import Submissions from "@/pages/sumbissions.tsx";
 import SubmissionForm from "@/pages/sumbission-form.tsx";
 import {RequireAuth} from "@/components/require-auth.tsx";
+import BriefBuilder from "@/pages/brief-builder.tsx";
 
 export const routes: RouteObject[] = [
     {
@@ -52,6 +53,13 @@ export const routes: RouteObject[] = [
         path: "/submissions/:id",
         element: <RequireAuth>
             <SubmissionForm/>
+        </RequireAuth>,
+    },
+
+    {
+        path: "/briefs/new",
+        element: <RequireAuth role="admin">
+            <BriefBuilder/>
         </RequireAuth>,
     },
 

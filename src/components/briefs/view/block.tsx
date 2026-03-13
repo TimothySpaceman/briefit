@@ -1,6 +1,6 @@
 import type {Block} from "@/lib/briefs.ts";
 import {Card, CardContent, CardTitle} from "@/components/ui/card.tsx";
-import Question from "@/components/briefs/question.tsx";
+import Question from "@/components/briefs/view/question.tsx";
 import {cn} from "@/lib/utils.ts";
 
 type Props = {

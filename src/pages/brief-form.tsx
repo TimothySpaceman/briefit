@@ -5,8 +5,8 @@ import {Spinner} from "@/components/ui/spinner.tsx";
 import {addDoc, collection, doc, getDoc, serverTimestamp} from "firebase/firestore";
 import {db} from "@/firebase";
 import {Card, CardContent, CardTitle} from "@/components/ui/card.tsx";
-import Block from "@/components/briefs/block";
-import {BriefFormProvider, useBriefForm} from "@/components/briefs/brief-form-context";
+import Block from "@/components/briefs/view/block.tsx";
+import {BriefFormProvider, useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
 import { toast } from "sonner"

@@ -15,6 +15,8 @@ import type {Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import BriefCard from "@/components/brief-card.tsx";
 import {Button} from "@/components/ui/button";
+import {useAuth} from "@/hooks/useAuth.ts";
+import {Link} from "react-router-dom";
 
 const PAGE_SIZE = 10;
 
@@ -23,6 +25,7 @@ export default function Briefs() {
     const [isLoading, setIsLoading] = useState(true);
     const [lastDoc, setLastDoc] = useState<DocumentData | null>(null);
     const [hasMore, setHasMore] = useState(true);
+    const {user} = useAuth();
 
     const fetchBriefs = async (isFirstLoad = false) => {
         setIsLoading(true);
@@ -73,10 +76,25 @@ export default function Briefs() {
 
     return (
         <div className="grow-1 flex flex-col items-center gap-6 bg-muted p-6 md:p-10">
-            <h1 className="text-center text-3xl font-bold">Брифи</h1>
+            <div className="w-full max-w-xl flex items-center justify-between gap-2">
+                <h1 className="text-center text-3xl font-bold">Брифи</h1>
+                {user?.role === "admin" && <Button asChild>
+                    <Link to={`/briefs/new`}>Створити</Link>
+                </Button>}
+            </div>
 
             {briefs.map((brief) => (
-                <BriefCard key={`brief-${brief.id}`} brief={brief}/>
+                <BriefCard
+                    key={`brief-${brief.id}`}
+                    brief={brief}
+                    actions={user?.role === "admin" ? (
+                        <p>Admin here</p>
+                        ) : (
+                        <Button asChild>
+                            <Link to={`/briefs/${brief.id}`}>Заповнити</Link>
+                        </Button>
+                    )}
+                />
             ))}
 
             {isLoading && <Spinner className="size-12"/>}

@@ -1,6 +1,6 @@
-import type {BaseQuestion, SelectQuestion} from "@/lib/briefs";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select";
-import {useBriefForm} from "./brief-form-context";
+import type {BaseQuestion, SelectQuestion} from "@/lib/briefs.ts";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select.tsx";
+import {useBriefForm} from "./brief-form-context.tsx";
 
 type Props = {
     question: BaseQuestion & SelectQuestion;

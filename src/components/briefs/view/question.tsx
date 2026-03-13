@@ -1,8 +1,8 @@
-import type {Question} from "@/lib/briefs";
-import TextQuestion from "@/components/briefs/text-question.tsx";
-import CheckboxQuestion from "@/components/briefs/checkbox-question.tsx";
-import RadioQuestion from "./radio-question";
-import SelectQuestion from "@/components/briefs/select-question.tsx";
+import type {Question} from "@/lib/briefs.ts";
+import TextQuestion from "@/components/briefs/view/text-question.tsx";
+import CheckboxQuestion from "@/components/briefs/view/checkbox-question.tsx";
+import RadioQuestion from "./radio-question.tsx";
+import SelectQuestion from "@/components/briefs/view/select-question.tsx";
 
 type Props = {
     question: Question;

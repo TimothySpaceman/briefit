@@ -6,8 +6,8 @@ import {collection, deleteDoc, doc, getDoc, setDoc} from "firebase/firestore";
 import {db} from "@/firebase";
 import {Card, CardContent, CardFooter, CardTitle} from "@/components/ui/card.tsx";
 import {useAuth} from "@/hooks/useAuth.ts";
-import {BriefFormProvider, useBriefForm} from "@/components/briefs/brief-form-context.tsx";
-import Block from "@/components/briefs/block.tsx";
+import {BriefFormProvider, useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
+import Block from "@/components/briefs/view/block.tsx";
 import {Button} from "@/components/ui/button";
 import {toast} from "sonner";
 import {Trash} from "lucide-react";
@@ -58,9 +58,9 @@ export default function SubmissionForm() {
                 <Card className="w-full max-w-xl">
                     <CardTitle className="px-4 flex gap-4 items-start justify-between">
                         <h2 className="text-2xl font-bold">{submission.brief.title}</h2>
-                        <Button variant="destructive" size="icon" onClick={handleRemove}>
+                        {user?.role === "admin" && <Button variant="destructive" size="icon" onClick={handleRemove}>
                             <Trash/>
-                        </Button>
+                        </Button>}
                     </CardTitle>
                     <CardContent>
                         <p className="text-base">{submission.brief.description}</p>

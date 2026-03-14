@@ -11,6 +11,7 @@ import SubmissionForm from "@/pages/sumbission-form.tsx";
 import {RequireAuth} from "@/components/require-auth.tsx";
 import NewBrief from "@/pages/brief-new.tsx";
 import EditBriefPage from "@/pages/brief-edit.tsx";
+import NotFound from "@/pages/not-found.tsx";
 
 export const routes: RouteObject[] = [
     {
@@ -70,6 +71,11 @@ export const routes: RouteObject[] = [
             <EditBriefPage/>
         </RequireAuth>,
     },
+
+    {
+        path: "*",
+        element: <NotFound/>
+    }
 
     // {
     //     path: "/dashboard",

@@ -146,8 +146,6 @@ export default function Submissions() {
                     </Card>
             )}
 
-            {<pre>{JSON.stringify(brief, null, 4)}</pre>}
-
             {submissions.map((submission) => (
                 <SubmissionCard key={`submission-${submission.id}`} submission={submission}/>
             ))}

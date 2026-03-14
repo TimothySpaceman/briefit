@@ -84,8 +84,5 @@ export default function BriefBuilder({initialBrief, onSave}: Props) {
         <Button onClick={handleAddBlock} disabled={isLoading}>
             <Plus/> Додати блок
         </Button>
-        {/*<pre>*/}
-        {/*    {JSON.stringify(brief.schema, null, 2)}*/}
-        {/*</pre>*/}
     </>
 }

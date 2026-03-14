@@ -1,0 +1,116 @@
+import type {BaseQuestion, Question, TextQuestion} from "@/lib/briefs.ts";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import {Field, FieldError, FieldLegend} from "@/components/ui/field.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {useEffect} from "react";
+
+type Props = {
+    question: BaseQuestion & TextQuestion;
+    onChange: (question: Question) => void;
+    errors: Record<string, string>
+}
+
+type InputKind = "text" | "email" | "address" | "phone" | "textarea";
+
+const inputKinds: InputKind[] = ["text", "textarea", "email", "address", "phone"]
+
+const inputKindLabels: any = {
+    text: "Текст (короткий)",
+    textarea: "Текст (довгий)",
+    email: "Email",
+    address: "Адреса",
+    phone: "Телефон"
+}
+
+const userSources = ["NONE", "email", "displayName"]
+
+const userSourcesLabels: any = {
+    NONE: "Без автозаповнення",
+    email: "Email користувача",
+    displayName: "Імʼя користувача"
+}
+
+export default function TextQuestionBuilder({question, onChange, errors}: Props) {
+    useEffect(() => {
+        if(question.required && (!question.minLength || +question.minLength <= 0)){
+            onChange({
+                ...question,
+                minLength: 1,
+            })
+        }
+    }, [question.required]);
+
+    return <>
+        <Field className="gap-0">
+            <FieldLegend>Вид поля</FieldLegend>
+            <Select
+                name={`${question.id}-inputKind`}
+                value={question.inputKind}
+                onValueChange={(val) => onChange({...question, inputKind: val as InputKind})}
+            >
+                <SelectTrigger>
+                    <SelectValue placeholder="Оберіть відповідь..."/>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        {inputKinds.map((option) => (
+                            <SelectItem
+                                key={`${question.id}-inputKind-${option}`}
+                                value={option}
+                            >
+                                {inputKindLabels[option]}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+            <FieldError>
+                {errors.inputKind}
+            </FieldError>
+        </Field>
+        <Field className="gap-0">
+            <FieldLegend>Автозаповнення</FieldLegend>
+            <Select
+                name={`${question.id}-userSource`}
+                value={question.userSource ?? "NONE"}
+                onValueChange={(val) => onChange({...question, userSource: val === "NONE" ? null : val})}
+            >
+                <SelectTrigger>
+                    <SelectValue placeholder="Оберіть відповідь..."/>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        {userSources.map((option) => (
+                            <SelectItem
+                                key={`${question.id}-userSource-${option}`}
+                                value={option}
+                            >
+                                {userSourcesLabels[option]}
+                            </SelectItem>
+                        ))}
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
+            <FieldError>
+                {errors.userSource}
+            </FieldError>
+        </Field>
+        <Field className="gap-0">
+            <FieldLegend>Мінімальна довжина</FieldLegend>
+            <Input
+                type="number"
+                placeholder="Необовʼязково"
+                name={`${question.id}-minLength`}
+                value={question.required ? Math.max(+(question.minLength ?? "1"), 1) : (question.minLength ?? "")}
+                min={question.required ? 1 : 0}
+                onChange={e => {
+                    const value = e.target.value.length > 0 ? +e.target.value : null;
+                    onChange({...question, minLength: value});
+                }}
+            />
+            <FieldError>
+                {errors.minLength}
+            </FieldError>
+        </Field>
+    </>
+}

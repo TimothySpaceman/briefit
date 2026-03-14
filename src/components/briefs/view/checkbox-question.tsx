@@ -1,14 +1,14 @@
-import type {BaseQuestion, CheckboxQuestion, Option} from "@/lib/briefs";
-import {Checkbox} from "@/components/ui/checkbox";
+import type {BaseQuestion, CheckboxQuestion, Option} from "@/lib/briefs.ts";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {useBriefForm} from "@/components/briefs/brief-form-context.tsx";
+import {useBriefForm} from "@/components/briefs/view/brief-form-context.tsx";
 
 type Props = {
     question: BaseQuestion & CheckboxQuestion;
 }
 
 export default function CheckboxQuestion({question}: Props) {
-    const {isLoading, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? [];
 
@@ -31,7 +31,7 @@ export default function CheckboxQuestion({question}: Props) {
                     value={option.value}
                     onCheckedChange={() => toggle(option.value)}
                     checked={value.includes(option.value)}
-                    disabled={isLoading}
+                    disabled={isLoading || isReadOnly}
                 />
                 <Label
                     htmlFor={id(option)}

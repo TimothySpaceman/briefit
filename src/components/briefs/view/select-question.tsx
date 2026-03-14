@@ -1,13 +1,13 @@
-import type {BaseQuestion, SelectQuestion} from "@/lib/briefs";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../ui/select";
-import {useBriefForm} from "./brief-form-context";
+import type {BaseQuestion, SelectQuestion} from "@/lib/briefs.ts";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "../../ui/select.tsx";
+import {useBriefForm} from "./brief-form-context.tsx";
 
 type Props = {
     question: BaseQuestion & SelectQuestion;
 }
 
 export default function SelectQuestion({question}: Props) {
-    const {isLoading, answers, setAnswer} = useBriefForm();
+    const {isLoading, isReadOnly, answers, setAnswer} = useBriefForm();
 
     const value = answers[question.id] ?? "";
 
@@ -16,7 +16,7 @@ export default function SelectQuestion({question}: Props) {
         required={question.required}
         value={value}
         onValueChange={(val) => setAnswer(question.id, val)}
-        disabled={isLoading}
+        disabled={isLoading || isReadOnly}
     >
         <SelectTrigger>
             <SelectValue placeholder="Оберіть відповідь..."/>

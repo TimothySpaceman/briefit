@@ -1,10 +1,24 @@
 import {db} from "@/firebase";
-import {collection, type DocumentData, getDocs, limit, orderBy, query, startAfter} from "firebase/firestore";
+import {
+    collection, deleteDoc,
+    doc,
+    type DocumentData,
+    getDoc,
+    getDocs,
+    limit,
+    orderBy,
+    query, setDoc,
+    startAfter
+} from "firebase/firestore";
 import {useEffect, useState} from "react";
 import type {Brief} from "@/lib/briefs.ts";
 import {Spinner} from "@/components/ui/spinner.tsx";
 import BriefCard from "@/components/brief-card.tsx";
 import {Button} from "@/components/ui/button";
+import {useAuth} from "@/hooks/useAuth.ts";
+import {Link} from "react-router-dom";
+import {Eye, Pencil, Trash} from "lucide-react";
+import {toast} from "sonner";
 
 const PAGE_SIZE = 10;
 
@@ -13,6 +27,7 @@ export default function Briefs() {
     const [isLoading, setIsLoading] = useState(true);
     const [lastDoc, setLastDoc] = useState<DocumentData | null>(null);
     const [hasMore, setHasMore] = useState(true);
+    const {user} = useAuth();
 
     const fetchBriefs = async (isFirstLoad = false) => {
         setIsLoading(true);
@@ -50,7 +65,6 @@ export default function Briefs() {
             if (querySnapshot.docs.length < PAGE_SIZE) {
                 setHasMore(false);
             }
-
         } catch (error) {
             console.error("Error fetching briefs:", error);
         } finally {
@@ -58,16 +72,56 @@ export default function Briefs() {
         }
     };
 
+    async function handleRemove(brief: Brief) {
+        if (!confirm(`Ви дійсно хочете видалити бриф "${brief.title}"?`)) return
+
+        try {
+            await deleteDoc(doc(db, "briefs", brief.id));
+            setBriefs(prev => prev.filter(b => b.id !== brief.id));
+        } catch (error) {
+            toast("Сталася помилка. Спробуйте пізніше")
+        }
+    }
+
     useEffect(() => {
         fetchBriefs(true);
     }, []);
 
     return (
         <div className="grow-1 flex flex-col items-center gap-6 bg-muted p-6 md:p-10">
-            <h1 className="text-center text-3xl font-bold">Брифи</h1>
+            <div className="w-full max-w-xl flex items-center justify-between gap-2">
+                <h1 className="text-center text-3xl font-bold">Брифи</h1>
+                {user?.role === "admin" && <Button asChild>
+                    <Link to={`/briefs/new`}>Створити</Link>
+                </Button>}
+            </div>
 
             {briefs.map((brief) => (
-                <BriefCard key={`brief-${brief.id}`} brief={brief}/>
+                <BriefCard
+                    key={`brief-${brief.id}`}
+                    brief={brief}
+                    actions={user?.role === "admin" ? (
+                        <>
+                            <Button asChild size="icon">
+                                <Link to={`/briefs/${brief.id}`}>
+                                    <Eye/>
+                                </Link>
+                            </Button>
+                            <Button asChild size="icon">
+                                <Link to={`/briefs/${brief.id}/edit`}>
+                                    <Pencil/>
+                                </Link>
+                            </Button>
+                            <Button variant="destructive" onClick={() => handleRemove(brief)} size="icon">
+                                <Trash/>
+                            </Button>
+                        </>
+                        ) : (
+                        <Button asChild>
+                            <Link to={`/briefs/${brief.id}`}>Заповнити</Link>
+                        </Button>
+                    )}
+                />
             ))}
 
             {isLoading && <Spinner className="size-12"/>}

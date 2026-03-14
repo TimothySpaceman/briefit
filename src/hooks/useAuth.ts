@@ -4,7 +4,7 @@ import {onAuthStateChanged, type User as FirebaseUser} from "firebase/auth";
 import type {User} from "@/lib/auth";
 import {doc, getDoc} from "firebase/firestore";
 
-export type AuthWithRole =
+export type Auth =
     | {
     fbUser: FirebaseUser;
     user: User;
@@ -28,8 +28,8 @@ async function waitForUserDoc(uid: string, retries = 5, delay = 200): Promise<Us
     throw new Error("User document does not exist after retries");
 }
 
-export function useAuth(): AuthWithRole {
-    const [state, setState] = useState<AuthWithRole>({
+export function useAuth(): Auth {
+    const [state, setState] = useState<Auth>({
         fbUser: null,
         user: null,
         loading: true,

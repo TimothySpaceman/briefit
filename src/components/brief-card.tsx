@@ -1,19 +1,17 @@
 import type {Brief} from "@/lib/briefs";
 import {Card, CardContent, CardTitle} from "@/components/ui/card.tsx";
-import {Link} from "react-router-dom";
-import {Button} from "@/components/ui/button.tsx";
+import type {ReactNode} from "react";
 
 type Props = {
     brief: Brief;
+    actions?: ReactNode
 }
 
-export default function BriefCard({brief}: Props) {
+export default function BriefCard({brief, actions}: Props) {
     return <Card className="w-full max-w-xl">
-        <CardTitle className="px-4 flex justify-between items-center gap-6">
-            <h2 className="text-2xl font-bold">{brief.title}</h2>
-            <Button asChild>
-                <Link to={`/briefs/${brief.id}`}>Заповнити</Link>
-            </Button>
+        <CardTitle className="px-4 flex justify-end items-center gap-1">
+            <h2 className="text-2xl font-bold ml-0 mr-auto">{brief.title}</h2>
+            {actions}
         </CardTitle>
         <CardContent>
             <p>{brief.description}</p>
